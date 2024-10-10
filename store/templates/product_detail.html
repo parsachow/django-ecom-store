@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!--Main layout-->
+<main class="mt-5 pt-4">
+    <div class="container mt-5">
+        <!--Grid row-->
+        <div class="row">
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+                <img src="{{ product.image.url }}" class="img-fluid"/>
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+                <!--Content-->
+                <div class="p-4">
+                    <div class="mb-3">
+                        <a href="">
+                            <span class="badge bg-dark me-1">{{ product.category }}</span>
+                        </a>
+                        <a href="">
+                            <span class="badge bg-info me-1">New</span>
+                        </a>
+                    </div>
+
+                    <p class="lead">
+                        <span>Price: ${{ product.price }} </span>
+                    </p>
+
+                    <strong><p style="font-size: 20px;">Description</p></strong>
+
+                    <p>{{ product.description }} <br> Extra text for better visuals. Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta odit voluptates, quibusdam officia. </p>
+
+                    <form class="d-flex justify-content-left">
+                        <!-- Default input -->
+                        <div class="form-outline me-1" style="width: 100px; background-color: #e6e8eb;">
+                            <input type="number" value="1" class="form-control" />
+                        </div>
+                        <button id="add-cart-btn" class="btn btn-primary ms-1" type="submit" value="{{ product.id }}">
+                            Add to cart
+                            <i class="fas fa-shopping-cart ms-1"></i>
+                        </button>
+                    </form> 
+                </div>
+                <!--Content-->
+            </div>
+            <!--Grid column-->
+        </div>
+        <!--Grid row-->
+
+        <hr />
+
+<script>
+    $(document).on('click', '#add-cart-btn', function(e){
+        e.preventDefault();
+
+        //sending/posting data to the backend without refreshing the page
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart_add' %}',
+            data: {
+                product_id: $('#add-cart-btn').val(), //the value we are getting when user adds a product comes from add-cart button's value using the "val()" function
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action: 'post',
+            },
+
+            success: function(json){
+                console.log(json)
+            },
+
+            error: function(xhr, errmsg, err){
+
+            },
+        });
+
+    });
+</script>
+
+{% endblock %}
