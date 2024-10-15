@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<!--Main layout-->
+
+<div class="container">
+    <!-- Heading -->
+     <h2 class="my-5 text-center">Checkout form</h2>
+
+        <!--Grid row-->
+        {% comment %} <div class="row"> {% endcomment %}
+
+            <!--Grid column-->
+            <div class="d-flex justify-content-center mb-4">
+                <!--Card-->
+                <div class="card p-4 d-flex justify-content-center">
+                    <!--Grid row-->
+                    <div class="row mb-2">
+                        <!--Grid column-->
+                        <div class="col-md-6 mb-2">
+                            <!--firstName-->
+                            <div>
+                                <label class="form-label" for="typeText">First name</label>
+                                <input type="text" id="typeText" class="form-control" />
+                            </div>
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-md-6 mb-2">
+                            <!--lastName-->
+                            <div>
+                                <label class="form-label" for="typeText">Last name</label>
+                                <input type="text" id="typeText" class="form-control" />
+                            </div>
+                        </div>
+                        <!--Grid column-->
+                    </div>
+                    <!--Grid row-->
+
+                    <!--email-->
+                    <p class="mb-0">
+                        Email
+                    </p>
+                    <div class="mb-3">
+                         <input type="email" class="form-control" />
+                    </div>
+
+                    <!--address-->
+                    <p class="mb-0">
+                        Address
+                    </p>
+                    <div class="mb-3">
+                        <input type="text" class="form-control"  />
+                    </div>
+
+                    <!--address-2-->
+                    <p class="mb-0">
+                        Address 2 (optional)
+                    </p>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" />
+                    </div>
+
+                    <!--Grid row-->
+                    <div class="row">
+                        <!--Grid column-->
+                        <div class="col-lg-4 col-md-12 mb-4">
+                            <p class="mb-0">
+                                Country
+                            </p>
+                            <div class="mb-3">
+                            <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-lg-4 col-md-12 mb-4">
+                            <p class="mb-0">
+                                State
+                            </p>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-lg-4 col-md-12 mb-4">
+                            <p class="mb-0">
+                                Zip
+                            </p>
+                            <div class="mb-3">
+                                <input type="text" class="form-control"/>
+                            </div>
+                        </div>
+                        <!--Grid column-->
+                    </div>
+                    <!--Grid row-->
+
+                    <hr />
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">Shipping address is the same as my billing address</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">Save this information for next time</label>
+                    </div>
+
+                    <hr />
+
+                    <div class="my-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked />
+                            <label class="form-check-label" for="flexRadioDefault1"> Credit card </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                            <label class="form-check-label" for="flexRadioDefault2"> Cash on Delivery </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" />
+                            <label class="form-check-label" for="flexRadioDefault3"> Paypal </label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <p class="mb-0">
+                                Name on card
+                            </p>
+                            <div>
+                                <input type="text" class="form-control"/>
+                                <div class="form-helper">Full name as displayed on card</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p class="mb-0">
+                                Credit card number
+                            </p>
+                            <div>
+                                <input type="text" class="form-control"/>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <p class="mb-0">
+                                Expiration
+                            </p>
+                            <div>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <p class="mb-0">
+                                CVV
+                            </p>
+                            <div>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mb-4" />   
+
+                  <button class="btn btn-primary" style="background-color: rgb(86, 114, 127)" type="submit">Place Order</button>
+            {% comment %} </div> {% endcomment %}
+        </div>
+</div>
+
+
+
+{% endblock %}

@@ -1,3 +1,6 @@
+from store.models import *
+
+
 class Cart():
     def __init__(self, request):
         self.session = request.session
@@ -11,9 +14,48 @@ class Cart():
         
         self.cart = cart
     
-    def add(self, product):
+    def add(self, product, quantity):
+        #string format product.id is taken since django uses json for serializing session data and json only allows string key names
         product_id = str(product.id)
-        self.cart[product_id] = {'price': str(product.price)}
+        product_quantity = str(quantity)
+        
+        if product_id in self.cart:
+            pass
+        else:
+            self.cart[product_id]={'price': str(product.price)}
+            self.cart[product_id]=int(product_quantity)
         
         self.session.modified = True
+    
+    def get_products(self):
+        product_ids = self.cart.keys()
+        products = Product.objects.filter(id__in=product_ids)
+        return products
+    
+    def get_product_quantities(self):
+        quantities = self.cart
+        return quantities
+    
+    def get_cart_totalprice(self):
+        product_ids = self.cart.keys()
+        products = Product.objects.filter(id__in=product_ids)
+        quantities = self.cart
+        total = 0
+        for key, value in quantities.items():
+            key = int(key)
+            for product in products:
+                if product.id == key:
+                    total = total + (product.price * value)
+        return total
+    
+    #get total number of products in cart
+    def __len__(self):
+        return len(self.cart)
+    
+    
+    def delete(self, product):
+        product_id = str(product.id)
+        if product_id in self.cart:
+            del self.cart[product_id]
         
+        self.session.modified = True

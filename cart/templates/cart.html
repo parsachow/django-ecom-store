@@ -10,35 +10,111 @@
     <h4 class="d-flex justify-content-around align-items-center mb-3">
         <span class="text-muted">Shopping Cart</span> 
         
-        {% comment %} <span class="badge rounded-pill badge-primary">3</span> {% endcomment %}
     </h4>
+    <!-- Table Cart -->
 
-    <!-- Cart -->
-    <ul class="list-group mb-3">
-        <li class="list-group-item d-flex justify-content-between">
-            <div class='d-flex'>
-                    <img class="me-3 rounded-circle" style="max-width:50px; height: 50px;" src='https://www.shutterstock.com/image-photo/pretty-beautiful-woman-brunette-hair-600nw-1695648628.jpg'>
-                   <div>
-                <h6 class="my-0">Product name</h6>
-                <small class="text-muted">Brief description</small>
-                   </div>
+    <table class="table align-middle mb-0 bg-white">
+        <thead class="bg-light">
+          <tr>
+            <th><strong>Product</strong></th>
+            <th><strong>Quantity</strong></th>
+            <th><strong>Price</strong></th>
+            <th><strong>Total</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% if cart_products %}
+            
+          <tr>
+            {% for product in cart_products %}
+            
+            <td>
+              <div class="d-flex align-items-center">
+                <img
+                    src="{{ product.image.url }}"
+                    alt=""
+                    style="width: 50px; height: 50px"
+                    class="rounded-circle"
+                    />
+                <div class="ms-3">
+                  <p class="fw-bold mb-1">{{ product.name }}</p>
+                  <p class="text-muted mb-0">{{ product.description }}</p>
+                </div>
+              </div>
+            </td>
+            <td>
+            <div class="d-flex justify-content-between">
+                <div>
+                {% for key,value in quantities.items %}
+                    {% if key == product.id %}
+                <span class="badge badge-success rounded">{{ value }}</span>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <div class="d-flex flex-column">
+                    <i class="fas fa-angle-up"></i>
+                    <i class="fas fa-angle-down"></i>
+                </div>
+                <div></div>
+                <div></div>
             </div>
-            <span class="text-muted">$12</span>
-        </li>
-        
-        <li class="list-group-item d-flex justify-content-between">
-            <span>Total (USD)</span>
-            <strong>$20</strong>
-        </li>
-    </ul>
-</div>
-<div>
 
+            </td>
+            <td>
+                <p class="fw-normal mb-1">{{ product.price }}</p>
+            </td>
+            
+            <td>$</td>
+            
+          </tr> 
+          {% endfor %}
+        
+        <!-- Total Price and Quantity Bottom Row -->
+          <tr>
+            <td style="background-color: rgb(86, 114, 127, 0.15)">
+              <div class="d-flex align-items-center">
+                
+                <div class="ms-3">
+                  <p class="fw-bold mb-1"><strong>Total:</strong></p>
+                  
+                </div>
+              </div>
+            </td>
+            <td style="background-color: rgb(86, 114, 127, 0.15)">
+                <span class="badge badge-danger rounded d-inline">qty of items</span>
+            </td>
+            <td style="background-color: rgb(86, 114, 127, 0.15)">
+                <p class="fw-normal mb-1"></p>
+            </td>
+            <td style="background-color: rgb(86, 114, 127, 0.15)"><strong>${{ cart_total }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Total Price and Quantity Bottom Row -->
+     {% endif %}
+
+    <!-- Table Cart -->
+<br>
+<br>
+<br>
+
+<div class="d-flex justify-content-around">
+    <a href="{% url 'home' %}" class="btn btn-info" style="background-color: rgb(86, 114, 127)" type="button"><span class="fas fa-angles-left"></span> Back to Shopping</a>
+    <a href="{% url 'checkout' %}" class="btn btn-info" style="background-color: rgb(86, 114, 127)" type="submit">Continue to checkout <span class="fas fa-angles-right"></span></button></a>
 </div>
+
+
 <br>
 <br>
 <br>
-    <!-- Cart -->
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
     
 
 {% endblock %}

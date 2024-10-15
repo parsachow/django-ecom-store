@@ -13,27 +13,7 @@ STATUS = (
     ("OID", "Order Is Delivered")
     )
 
-# Create your models here.
-class Customer(models.Model):
-    user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    
-    def __str__(self):
-        return self.name
-
-#using post_save signal to associate User to Customer    
-
-# def create_customer(sender, instance, created, **kwargs):
-#     if created:
-#         Customer.objects.create(user=instance)
-#         print("customer created")
-# post_save.connect(create_customer, sender=User)
-
-# # @receiver(post_save, sender=User)
-# def save_customer(sender, instance, **kwargs):
-#     instance.customer.save()
-    
+# Create your models here. 
 
 class Category(models.Model):
     product_type = models.CharField(max_length=50)
@@ -59,23 +39,16 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'product_id': self.id})
 
-class OrderItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-    
-    def get_item_price(self):
-        total = self.product.price * self.quantity
-        return total
+
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    products = models.ManyToManyField(OrderItem)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=3, choices=STATUS, default=STATUS[0][0])
     ordered_at = models.DateTimeField(auto_now_add=True)
-    #is_completed - Boolean 
+    is_completed = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"{self.customer.name}'s Shipment Status - {self.get_status_display()}"
+        return f"{self.user.username}'s Shipment Status - {self.get_status_display()}"
     
     def get_total_price(self):
         total = 0
@@ -85,3 +58,43 @@ class Order(models.Model):
     
     class Meta:
         ordering = ['-ordered_at']
+
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    
+    def __str__(self):
+        return self.product.name
+        
+    def get_item_price(self):
+        total = self.product.price * self.quantity
+        return total
+
+
+
+
+# -----------
+
+
+# class Customer(models.Model):
+#     user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
+#     name = models.CharField(max_length=50)
+#     email = models.EmailField(unique=True)
+    
+#     def __str__(self):
+#         return self.name
+
+#using post_save signal to associate User to Customer    
+
+# def create_customer(sender, instance, created, **kwargs):
+#     if created:
+#         Customer.objects.create(user=instance)
+#         print("customer created")
+# post_save.connect(create_customer, sender=User)
+
+# # @receiver(post_save, sender=User)
+# def save_customer(sender, instance, **kwargs):
+#     instance.customer.save()
+   

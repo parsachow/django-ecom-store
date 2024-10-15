@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from .forms import CustomUserForm
-from .models import Category, Customer, Product, Order, OrderItem
+from .models import Category, User, Product, Order, OrderItem
 
 # Create your views here.
     
@@ -31,8 +31,7 @@ def signup(request):
             login(request, user)
             return redirect('home')
         else:
-            # error_message = 'Invalid Signup'
-            print(form.errors)
+            error_message = 'Invalid Signup'
     #if bad POST/GET request, render empty signup form
     form = CustomUserForm()
     context = {'form': form, 'error_message': error_message}
@@ -44,6 +43,7 @@ class Home(ListView):
     model = Product
     paginate_by = 8
     template_name = 'home.html'  
+    #UnorderedObjectListWarning can be overriden by adding a datetimefield to the model, then ordering the queryset by that field
 
 class ProductDetail(DetailView):
     model = Product
@@ -64,4 +64,6 @@ def search_product(request):
         return render(request, 'search.html', {'search': search, 'search_performed': search_performed})
     else:
         return render(request, "search.html", {})
-    
+
+def checkout(request):
+    return render(request, 'checkout.html')

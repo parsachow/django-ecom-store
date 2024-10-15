@@ -22,7 +22,7 @@
                             <span class="badge bg-dark me-1">{{ product.category }}</span>
                         </a>
                         <a href="">
-                            <span class="badge bg-info me-1">New</span>
+                            <span class="badge bg-info me-1" >New</span>
                         </a>
                     </div>
 
@@ -32,14 +32,23 @@
 
                     <strong><p style="font-size: 20px;">Description</p></strong>
 
-                    <p>{{ product.description }} <br> Extra text for better visuals. Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta odit voluptates, quibusdam officia. </p>
+                    <p>{{ product.description }} 
+                        <br> 
+                        <br> 
+                        Extra text for better visuals. Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta odit voluptates, quibusdam officia. </p>
 
                     <form class="d-flex justify-content-left">
                         <!-- Default input -->
-                        <div class="form-outline me-1" style="width: 100px; background-color: #e6e8eb;">
-                            <input type="number" value="1" class="form-control" />
+                        <div class="form-outline me-1" style="width: 100px;">
+                            <select class="form-select form-select-sm" id="total_cart_qty">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                              </select>
                         </div>
-                        <button id="add-cart-btn" class="btn btn-primary ms-1" type="submit" value="{{ product.id }}">
+                        <button id="add-cart-btn" class="btn btn-info ms-1" style="background-color: rgb(86, 114, 127)" type="submit" value="{{ product.id }}">
                             Add to cart
                             <i class="fas fa-shopping-cart ms-1"></i>
                         </button>
@@ -51,7 +60,7 @@
         </div>
         <!--Grid row-->
 
-        <hr />
+       
 
 <script>
     $(document).on('click', '#add-cart-btn', function(e){
@@ -63,12 +72,15 @@
             url: '{% url 'cart_add' %}',
             data: {
                 product_id: $('#add-cart-btn').val(), //the value we are getting when user adds a product comes from add-cart button's value using the "val()" function
+                product_quantity: $('#total_cart_qty option:selected').text(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 action: 'post',
             },
 
-            success: function(json){
-                console.log(json)
+                success: function(json){
+                //console.log(json)
+                    document.getElementById("cart-quantity").textContent = json.total_cart_qty
+                    location.reload();
             },
 
             error: function(xhr, errmsg, err){
@@ -79,4 +91,9 @@
     });
 </script>
 
+<br>
+<br>
+<br>
+<br>
+<br>
 {% endblock %}
