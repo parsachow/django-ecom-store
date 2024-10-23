@@ -10,11 +10,14 @@ from store.models import Product, Order, User
 
 def cart(request):
     cart = Cart(request)
-    cart_products = cart.get_products
-    cart_quantities = cart.get_product_quantities
-    cart_total = cart.get_cart_totalprice
+    cart_products = cart.get_products()
+    cart_quantities = cart.get_product_quantities()
+    cart_total = cart.get_cart_totalprice()
+    cart_total_prd_qty = cart.get_total_cart_products()
+    # total_product_price = cart.get_total_products_price()
+    print(cart_quantities)
     
-    return render(request, 'cart.html/', {"cart_products": cart_products, "cart_quantities": cart_quantities, "cart_total": cart_total,})
+    return render(request, 'cart.html/', {"cart_products": cart_products, "cart_quantities": cart_quantities, "cart_total": cart_total, 'cart_total_prd_qty': cart_total_prd_qty})
 
 
 

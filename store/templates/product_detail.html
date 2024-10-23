@@ -38,20 +38,23 @@
                         Extra text for better visuals. Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta odit voluptates, quibusdam officia. </p>
 
                     <form class="d-flex justify-content-left">
+                        
                         <!-- Default input -->
-                        <div class="form-outline me-1" style="width: 100px;">
-                            <select class="form-select form-select-sm" id="total_cart_qty">
+                       
+                        {% comment %} <div class="form-outline me-1" style="width: 100px;">
+                            <select class="form-select form-select-sm" id="product-quantity">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
                                 <option value="5">5</option>
                               </select>
-                        </div>
-                        <button id="add-cart-btn" class="btn btn-info ms-1" style="background-color: rgb(86, 114, 127)" type="submit" value="{{ product.id }}">
+                        </div>  {% endcomment %}
+                        
+                        <button id="{{ product.id }}" class="btn btn-info ms-1 add-to-cart-btn" style="background-color: rgb(86, 114, 127)" type="button">
                             Add to cart
                             <i class="fas fa-shopping-cart ms-1"></i>
-                        </button>
+                        </button> 
                     </form> 
                 </div>
                 <!--Content-->
@@ -60,27 +63,75 @@
         </div>
         <!--Grid row-->
 
-       
+
+
 
 <script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+
+ 
+    $(document).ready(function() {
+        $('.add-to-cart-btn').on('click', function(e) {
+            const productId = $(this).attr('id');  // Get the id of the clicked element
+            console.log(productId)
+     
+            const csrftoken = getCookie('csrftoken');
+            let product_id = productId; 
+            let url = "/cart_add/";
+            let data = {"product_id": product_id};
+     
+            $.ajax({
+                url: url,
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+                data: data,
+                success: function(response) {
+                    //console.log(response);
+                    window.location.reload()
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+
+</script>
+
+{% comment %} <script>
     $(document).on('click', '#add-cart-btn', function(e){
         e.preventDefault();
 
         //sending/posting data to the backend without refreshing the page
         $.ajax({
             type: 'POST',
-            url: '{% url 'cart_add' %}',
+            url: '{% url 'cart' %}',
             data: {
                 product_id: $('#add-cart-btn').val(), //the value we are getting when user adds a product comes from add-cart button's value using the "val()" function
-                product_quantity: $('#total_cart_qty option:selected').text(),
+                product_quantity: $('#cart_quantity option:selected').text(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 action: 'post',
             },
 
                 success: function(json){
-                //console.log(json)
-                    document.getElementById("cart-quantity").textContent = json.total_cart_qty
-                    location.reload();
+                console.log(json) 
             },
 
             error: function(xhr, errmsg, err){
@@ -88,8 +139,8 @@
             },
         });
 
-    });
-</script>
+    }); 
+</script>  {% endcomment %}
 
 <br>
 <br>

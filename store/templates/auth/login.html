@@ -4,7 +4,7 @@
 <div class="input-group d-flex align-items-center mb-4 justify-content-center">
 <form method="POST" action="{% url 'login' %}">
         {% csrf_token %} 
-        {% comment %} {{ form.as_p }}  {% endcomment %}
+        {{ form.as_p }} 
 <br>
 <br>
 <br>
@@ -12,19 +12,20 @@
 <br>
 
          <!-- Username input -->
-         <div >
+         {% comment %} <div >
             <span> Username: </span>
             <input type="text" id="form1Example1" class="form-control" name="username" style="background-color: rgba(0, 0, 0, 0.1); text-color: #E0E0E0"/>
-           
+           {{ form.username }}
           </div>
 
          <!-- Password input -->
          <div >
             <span> Password: </span>
             <input type="password" id="form3Example3" class="form-control" style="background-color: rgba(0, 0, 0, 0.1); text-color: #E0E0E0"/>
+            {{ form.password }}
           </div>
         <br>
-        <br>
+        <br> {% endcomment %}
          <!-- Submit button -->
          <button type="submit" class="btn btn-info btn-block mb-4" style="background-color: rgb(86, 114, 127)">LogIn</button>
 </form>

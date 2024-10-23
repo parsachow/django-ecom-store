@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+ <!--Grid column-->
+ <div class='align-self-center'>
+<br>
+<br>
+    <!-- Heading -->
+    <h4 class="d-flex justify-content-around align-items-center mb-3">
+        <span class="text-muted">Shopping Cart</span> 
+        
+    </h4>
+    <!-- Table Cart -->
+
+    <table class="table align-middle mb-0 bg-white">
+        <thead class="bg-light">
+          <tr>
+            <th><strong>Product</strong></th>
+            <th></th>
+            <th><strong>Price</strong></th>
+            <th><strong>Quantity</strong></th>
+            <th><strong>Total</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+        
+            
+          <tr>
+            
+            {% for item in items %}
+            <td>
+              <div class="d-flex align-items-center">
+                <img
+                    src="{{item.product.image.url}}"
+                    alt=""
+                    style="width: 50px; height: 50px"
+                    class="rounded-circle"
+                    />
+                <div class="ms-3">
+                  <p class="fw-bold mb-1">{{item.product.name}}</p>
+                  <p class="text-muted mb-0">{{item.product.description}}</p>
+                </div>
+                
+              </div>
+            </td>
+            <td>
+              <div>
+                <a href="{% url 'cart_delete' item.id %}" class="fas fa-trash-can"></a>
+              </div>
+            </td>
+            <td>
+                <p class="fw-normal mb-1">{{item.product.price}}</p>
+            </td>
+            <td id='prd-qty'>
+                 
+            <div class="d-flex justify-content-between">
+                <div>
+                
+                       
+                <span class="badge badge-success rounded">{{item.quantity}}</span>
+                       
+                </div>
+                <div class="d-flex flex-column">
+                    <i id="{{ item.product.id }}" class="cart-update fas fa-circle-plus mb-1" name="add" type="button"></i>
+                    <i id="{{ item.product.id }}" class="cart-update fas fa-circle-minus" name="delete" type="button"></i>
+                </div>
+                <div></div>
+                <div></div>
+            </div>
+
+            </td>
+
+            <td>$ {{item.get_item_price}}</td>
+            
+          </tr>
+
+        {% endfor %}
+
+        <!-- Total Price and Quantity Bottom Row -->
+          <tr>
+            <td style="background-color: rgb(86, 114, 127, 0.15)">
+              <div class="d-flex align-items-center">
+                
+                <div class="ms-3">
+                  <p class="fw-bold mb-1"><strong>Total:</strong></p>
+                  
+                </div>
+              </div>
+            </td>
+            
+            <td style="background-color: rgb(86, 114, 127, 0.15)">
+                <p class="fw-normal mb-1"></p>
+            </td>
+            <td style="background-color: rgb(86, 114, 127, 0.15)">
+                <p class="fw-normal mb-1"></p>
+            </td>
+            <td style="background-color: rgb(86, 114, 127, 0.15)">
+                <span class="badge badge-danger rounded d-inline">{{ cartItemsQuantity }}</span>
+            </td>
+            <td style="background-color: rgb(86, 114, 127, 0.15)"><strong>${{ cartTotalPrice }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Total Price and Quantity Bottom Row -->
+     
+
+    <!-- Table Cart -->
+<br>
+<br>
+<br>
+
+<div class="d-flex justify-content-around">
+    <a href="{% url 'home' %}" class="btn btn-info" style="background-color: rgb(86, 114, 127)" type="button"><span class="fas fa-angles-left"></span> Back to Shopping</a>
+    <a href="{% url 'checkout' %}" class="btn btn-info" style="background-color: rgb(86, 114, 127)" type="submit">Continue to checkout <span class="fas fa-angles-right"></span></button></a>
+</div>
+
+
+
+<script>
+
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  
+
+
+  $(document).ready(function() {
+      $('.cart-update').on('click', function(e) {
+          const productId = $(this).attr('id'); // Get the id of the clicked element
+          const actionname = $(this).attr('name'); 
+          console.log(productId)
+   
+          const csrftoken = getCookie('csrftoken');
+          let product_id = productId; 
+          let action = actionname
+          let url = "/cart_update/";
+          let data = {"product_id": product_id, "action": action};
+   
+          $.ajax({
+              url: url,
+              method: "POST",
+              headers: {
+                  'X-CSRFToken': csrftoken,
+              },
+              data: data,
+              success: function(response) {
+                  //console.log(response);
+                  window.location.reload()
+              },
+              error: function(error) {
+                  console.log(error);
+              }
+          });
+      });
+  });
+
+</script>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+  
+
+{% endblock %}

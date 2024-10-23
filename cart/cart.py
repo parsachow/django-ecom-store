@@ -1,4 +1,6 @@
 from store.models import *
+from decimal import Decimal
+
 
 
 class Cart():
@@ -24,17 +26,33 @@ class Cart():
         else:
             self.cart[product_id]={'price': str(product.price)}
             self.cart[product_id]=int(product_quantity)
-        
+    
         self.session.modified = True
+    
     
     def get_products(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
         return products
     
+   
+    # for 1 individual product
     def get_product_quantities(self):
-        quantities = self.cart
+        quantities = self.cart.values()
         return quantities
+    
+    
+    def get_total_cart_products(self):
+        quantity = self.cart.values()
+        total = sum(quantity)
+        return total
+    
+    
+    def get_total_products_price(self, product, quantity):
+        
+        # indv product price * product quantity
+        pass
+                
     
     def get_cart_totalprice(self):
         product_ids = self.cart.keys()
@@ -53,7 +71,7 @@ class Cart():
         return len(self.cart)
     
     
-    def delete(self, product):
+    def delete_product(self, product):
         product_id = str(product.id)
         if product_id in self.cart:
             del self.cart[product_id]

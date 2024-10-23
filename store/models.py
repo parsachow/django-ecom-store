@@ -13,6 +13,12 @@ STATUS = (
     ("OID", "Order Is Delivered")
     )
 
+PAYMENT = (
+    ("CC", "Credit Card"),
+    ("CD", "Cash on Delivery"),
+    ("PP", "Paypal")
+)
+
 # Create your models here. 
 
 class Category(models.Model):
@@ -36,8 +42,8 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
-    def get_absolute_url(self):
-        return reverse('product_detail', kwargs={'product_id': self.id})
+    # def get_absolute_url(self):
+    #     return reverse('product_detail', kwargs={'product_id': self.id})
 
 
 
@@ -48,12 +54,20 @@ class Order(models.Model):
     is_completed = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"{self.user.username}'s Shipment Status - {self.get_status_display()}"
+        return f"{self.user.username}"
     
-    def get_total_price(self):
+    def get_total_cart_price(self):
         total = 0
-        for order_item in self.products.all():
-            total += order_item.get_item_price()
+        items = self.orderitem_set.all()
+        for item in items:
+            total += item.get_item_price()
+        return total
+    
+    def get_total_cart_quantity(self):
+        total = 0
+        items = self.orderitem_set.all()
+        for item in items:
+            total += item.quantity
         return total
     
     class Meta:
@@ -64,6 +78,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     quantity = models.IntegerField()
+    # add product to cart, get or create (product=id, user=id)
     
     def __str__(self):
         return self.product.name
@@ -71,9 +86,23 @@ class OrderItem(models.Model):
     def get_item_price(self):
         total = self.product.price * self.quantity
         return total
-
-
-
+    
+    
+class Shipping(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    address = models.CharField(max_length=200, null=False)
+    state = models.CharField(max_length=50, null=False)
+    zip = models.CharField(max_length=10, null=False)
+    country = models.CharField(max_length=50, null=False)
+    payment = models.CharField(max_length=2, choices=PAYMENT, default=PAYMENT[1][1])
+    
+    def __str__(self):
+        return self.address
+    
+    
+    
+    
 
 # -----------
 
