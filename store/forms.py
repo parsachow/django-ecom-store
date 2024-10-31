@@ -1,6 +1,12 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import OrderItem
+from .models import Shipping
+
+PAYMENT_CHOICES = (
+    ("CC", "Credit Card"),
+    ("CD", "Cash on Delivery"),
+    ("PP", "Paypal")
+)
 
 class CustomUserForm(UserCreationForm):
     #adding extra fields
@@ -10,7 +16,10 @@ class CustomUserForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         fields = UserCreationForm.Meta.fields + ("email", "name")
 
-class CartAddForm(forms.ModelForm):
+
+class CheckoutForm(forms.ModelForm):
+    payment = forms.ChoiceField(choices=PAYMENT_CHOICES)
+    
     class Meta:
-        model = OrderItem
-        fields = ['quantity']
+        model = Shipping
+        fields = ['address', 'state', 'zip', 'country', 'payment']

@@ -3,14 +3,108 @@
 {% block content %}
 
 
-<div class="card text-center">
-    <div class="card-header">Order History for 'user'</div>
-    <div class="card-body">
-      <h5 class="card-title">Order Status</h5>
-      <p class="card-text">orderstatus info</p>
-      <a href="#" class="btn btn-danger" data-mdb-ripple-init>cancel order</a>
-    </div>
-    <div class="card-footer text-muted">ordered at </div>
-  </div>
+<div class="card text-center mx-5 my-5 px-5 py-2">
+  {% comment %} style= "padding-left: 75px; padding-right: 75px; {% endcomment %}
+  {% if orders %}
 
-{% endblock %}
+  {% for order in orders %}
+
+    <div class="card-header">Order History for {{ order.user }}</div>
+    <div class="card-body">
+      <h5 class="card-title">Order Status: </h5>
+      
+      <p class="card-text fw-bold" style="color:green">{{ order.get_status_display }}</p>
+     
+      {% for item in order.orderitem_set.all %}
+      
+        <ul class="list-group list-group-light">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <img src="{{item.product.image.url}}" alt="" style="width: 45px; height: 45px"
+                class="rounded-circle" />
+              <div class="ms-3">
+                <p class="fw-bold mb-1">{{ item.product.name }}</p>
+              </div>
+            </div>
+            <span class="badge rounded-pill badge-success">{{item.quantity}}</span>
+          </li>
+        </ul>
+      {% endfor %}
+        
+      {% if order.get_status_display == "Order Accepted" %}
+
+        <button id="{{ order.id }}" type=button class="btn btn-danger cancel-order-btn" data-mdb-ripple-init>cancel order</button>
+
+        {% elif order.get_status_display == "Order Being Processed"%}
+
+        <button id="{{ order.id }}" type=button class="btn btn-danger cancel-order-btn" data-mdb-ripple-init>cancel order</button>
+        
+      {% endif %}  
+    </div>
+      
+    <div class="card-footer text-muted">ordered at {{ order.ordered_at }}</div>
+
+
+  {% endfor %}
+
+{% else %}
+  No Order History
+{% endif %} 
+  </div>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+ 
+    $(document).ready(function() {
+        $('.cancel-order-btn').on('click', function(e) {
+            const orderId = $(this).attr('id') // Get the id of the clicked element
+            
+            console.log(orderId)
+     
+            const csrftoken = getCookie('csrftoken');
+            let order_id = orderId; 
+            let url = "/cancel_order/";
+            let data = {"order_id": order_id};
+     
+            $.ajax({
+                url: url,
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+                data: data,
+                success: function(response) {
+                    //console.log(response);
+                    window.location.reload()
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+
+</script>  
+  
+
+{% endblock %} 

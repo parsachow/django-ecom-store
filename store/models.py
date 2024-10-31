@@ -46,15 +46,16 @@ class Product(models.Model):
     #     return reverse('product_detail', kwargs={'product_id': self.id})
 
 
-
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=3, choices=STATUS, default=STATUS[0][0])
     ordered_at = models.DateTimeField(auto_now_add=True)
     is_completed = models.BooleanField(default=False)
+    payment = models.CharField(max_length=2, choices=PAYMENT, default=PAYMENT[1][1])
+    
     
     def __str__(self):
-        return f"{self.user.username}"
+        return f"{self.user.username} - {self.get_status_display()}"
     
     def get_total_cart_price(self):
         total = 0
@@ -88,18 +89,17 @@ class OrderItem(models.Model):
         return total
     
     
+
 class Shipping(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order= models.ForeignKey(Order, on_delete=models.CASCADE)
     address = models.CharField(max_length=200, null=False)
     state = models.CharField(max_length=50, null=False)
     zip = models.CharField(max_length=10, null=False)
     country = models.CharField(max_length=50, null=False)
-    payment = models.CharField(max_length=2, choices=PAYMENT, default=PAYMENT[1][1])
-    
+        
     def __str__(self):
         return self.address
-    
     
     
     
