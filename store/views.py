@@ -159,23 +159,6 @@ def checkout(request):
     
     return render(request, 'checkout.html', {'form':form, 'cartItemsQuantity':cartItemsQuantity})
 
-    
-# def order_confirmed(request):
-#     if request.method == "POST":
-#         form = CheckoutForm(request.POST)
-#         #get the order
-#         order = Order.objects.get(user=request.user, is_completed=False)
-#         print(order)
-    
-#         if form.is_valid():
-#             shipping = form.save(commit=False)
-#             shipping.user = request.user
-#             shipping.order = order
-#             # shipping.payment = order.payment - How to save payment info
-#             shipping.save()
-#             order.is_completed = True
-#             order.save()
-#         return render(request, 'order_confirmed.html')
 
 def order_confirmed(request):
     form = CheckoutForm(request.POST)
