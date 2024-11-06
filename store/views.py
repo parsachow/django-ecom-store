@@ -12,7 +12,7 @@ import json
 
 
 from .forms import CustomUserForm, CheckoutForm
-from .models import Category, User, Product, Order, OrderItem, Shipping
+from .models import Category, User, Product, Order, OrderItem, Shipping, Inventory
 
 # Create your views here.
     
@@ -48,7 +48,7 @@ class Home(ListView):
     paginate_by = 8
     template_name = 'home.html'  
     
-    # get quantity of items in current order
+    # get quantity of items in current order by adding context to page
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)
         order, created = Order.objects.get_or_create(user=self.request.user, is_completed=False)
@@ -160,23 +160,55 @@ def checkout(request):
     return render(request, 'checkout.html', {'form':form, 'cartItemsQuantity':cartItemsQuantity})
 
     
-def order_confirmed(request):
-    if request.method == "POST":
-        form = CheckoutForm(request.POST)
-        #get the order
-        order = Order.objects.get(user=request.user, is_completed=False)
-        print(order)
+# def order_confirmed(request):
+#     if request.method == "POST":
+#         form = CheckoutForm(request.POST)
+#         #get the order
+#         order = Order.objects.get(user=request.user, is_completed=False)
+#         print(order)
     
-        if form.is_valid():
-            shipping = form.save(commit=False)
-            shipping.user = request.user
-            shipping.order = order
-            shipping.payment = order.payment
-            shipping.save()
-            order.is_completed = True
-            order.save()
-        return render(request, 'order_confirmed.html')
+#         if form.is_valid():
+#             shipping = form.save(commit=False)
+#             shipping.user = request.user
+#             shipping.order = order
+#             # shipping.payment = order.payment - How to save payment info
+#             shipping.save()
+#             order.is_completed = True
+#             order.save()
+#         return render(request, 'order_confirmed.html')
 
+def order_confirmed(request):
+    form = CheckoutForm(request.POST)
+    if request.method == "POST" and form.is_valid():
+         # Get current order
+        order = Order.objects.filter(user=request.user, is_completed=False).first()
+        # Get the associated OrderItems for the order
+        order_items = order.orderitem_set.all()
+    
+        
+        # save final/current order 
+        order.is_completed = True
+        order.payment = form.cleaned_data['payment'] 
+        order.save()
+        #save shipping info from the form
+        shipping = form.save(commit=False)
+        shipping.user = request.user
+        shipping.order = order
+        shipping.save()
+        # adjust Inventory for each OrderItem
+        for order_item in order_items:
+            product = order_item.product
+            quantity = order_item.quantity
+            
+            inventory = get_object_or_404(Inventory, product=product)
+            if inventory.current_inventory >= quantity:
+                inventory.current_inventory -= quantity
+                inventory.save()
+            else:
+                messages.error(request, f"Not enough stock for {product.name}")
+                return redirect('cart')
+        return redirect('order_confirmed')
+    return render(request, 'order_confirmed.html')
 
 
 # orderhistory - orders placed(created) filtered by user

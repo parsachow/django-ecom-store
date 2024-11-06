@@ -22,4 +22,4 @@ class CheckoutForm(forms.ModelForm):
     
     class Meta:
         model = Shipping
-        fields = ['address', 'state', 'zip', 'country', 'payment']
+        fields = ['address', 'state', 'zip', 'country']

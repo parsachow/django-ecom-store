@@ -51,7 +51,7 @@ class Order(models.Model):
     status = models.CharField(max_length=3, choices=STATUS, default=STATUS[0][0])
     ordered_at = models.DateTimeField(auto_now_add=True)
     is_completed = models.BooleanField(default=False)
-    payment = models.CharField(max_length=2, choices=PAYMENT, default=PAYMENT[1][1])
+    payment = models.CharField(max_length=2, choices=PAYMENT, default=PAYMENT[1][0])
     
     
     def __str__(self):
@@ -63,6 +63,7 @@ class Order(models.Model):
         for item in items:
             total += item.get_item_price()
         return total
+    # return sum(item.get_item_price() for item in self.items.all()) - for orderFK in orderitem Model, related_name=items 
     
     def get_total_cart_quantity(self):
         total = 0
@@ -102,8 +103,16 @@ class Shipping(models.Model):
         return self.address
     
     
+class Inventory(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE) 
+    current_inventory = models.IntegerField()
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product.name} - {self.current_inventory} items in stock"
     
 
+    
 # -----------
 
 
